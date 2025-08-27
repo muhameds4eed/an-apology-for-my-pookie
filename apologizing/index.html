@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpe" href="Valentine Cartoon.jpeg">
+    <title>Dark Elegant Envelope</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Homemade+Apple&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+      body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #1a1a2e 0%, #16213e 100%);
+            
+            overflow: hidden;
+            padding: 20px;
+            color: #e6e6e6;
+        }
+        
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .envelope-wrapper {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 10;
+        }
+        
+        .envelope-wrapper:hover {
+            transform: translateY(-5px);
+        }
+        
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #2d2d42;
+            border-radius: 5px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+            transform-origin: center bottom;
+            z-index: 2;
+        }
+        
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #2d2d42;
+            border-radius: 5px;
+            overflow: hidden;
+            backface-visibility: hidden;
+        }
+        
+        .envelope-front::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom right, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.1) 100%);
+            z-index: 1;
+        }
+        
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #252536;
+            transform-origin: top;
+            transition: transform 0.8s ease;
+            clip-path: polygon(0 0, 100% 0, 50% 50%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 3;
+        }
+        
+        .envelope-seal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff2e63, #c70039);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 5px 15px rgba(199, 0, 57, 0.4);
+            transition: all 0.3s ease;
+            z-index: 4;
+            cursor: pointer;
+        }
+        
+        .envelope-seal:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 8px 20px rgba(199, 0, 57, 0.5);
+        }
+        
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+        }
+        
+        .envelope.fade-out {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+        
+        .letter {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 40%) scale(0.95);
+            width: 90vw;
+            max-width: 600px;
+            height: auto;
+            max-height: 80vh;
+            background: #2d2d42;
+            padding: 40px 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border-radius: 3px;
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+            color: #d6d6d6;
+            overflow-y: auto;
+            font-size: 18px;
+            line-height: 1.6;
+            pointer-events: none;
+            border: 1px solid #404064;
+        }
+        
+        .letter.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .letter-content {
+            position: relative;
+            padding: 30px;
+            background: #2d2d42;
+            border: 1px solid #404064;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+          .letter-header {
+            text-align: center;
+            margin-bottom: 25px;
+          
+            font-size: 28px;
+            color: #ff2e63;
+            border-bottom: 1px solid rgba(255, 46, 99, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        .letter-body {
+            
+            font-size: 18px;
+            line-height: 1.8;
+            text-align: left;
+            color: #d6d6d6;
+        }
+        
+        .letter-body p {
+            margin-bottom: 20px;
+        }
+        
+        .letter-signature {
+            text-align: right;
+            margin-top: 30px;
+            
+            font-size: 26px;
+            color: #ff2e63;
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            background: #ff2e63;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 21;
+        }
+        
+        .close-btn:hover {
+            background: #c70039;
+            transform: scale(1.1);
+        }
+        
+        .paper-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            border-radius: 3px;
+        }
+        
+        .paper-fibers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h100v100H0z' fill='%232d2d42'/%3E%3Cpath d='M0 0v100' stroke='%23404064' stroke-width='0.5' fill='none'/%3E%3Cpath d='M20 0v100' stroke='%23404064' stroke-width='0.3' fill='none'/%3E%3Cpath d='M40 0v100' stroke='%23404064' stroke-width='0.3' fill='none'/%3E%3Cpath d='M60 0v100' stroke='%23404064' stroke-width='0.3' fill='none'/%3E%3Cpath d='M80 0v100' stroke='%23404064' stroke-width='0.3' fill='none'/%3E%3Cpath d='M0 0h100' stroke='%23404064' stroke-width='0.5' fill='none'/%3E%3Cpath d='M0 20h100' stroke='%23404064' stroke-width='0.3' fill='none'/%3E%3Cpath d='M0 40h100' stroke='%23404064' stroke-width='0.3' fill='none'/%3E%3Cpath d='M0 60h100' stroke='%23404064' stroke-width='0.3' fill='none'/%3E%3Cpath d='M0 80h100' stroke='%23404064' stroke-width='0.3' fill='none'/%3E%3C/svg%3E");
+            background-size: 20px 20px;
+            opacity: 0.2;
+            pointer-events: none;
+            border-radius: 3px;
+        }
+        
+        .paper-folds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.03) 0%, transparent 10%),
+                        linear-gradient(to right, rgba(255,255,255,0.03) 0%, transparent 10%);
+            pointer-events: none;
+            border-radius: 3px;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+        
+        @media (max-width: 768px) {
+            .letter {
+                width: 95vw;
+                padding: 20px 15px;
+                font-size: 16px;
+            }
+            
+            .letter-content {
+                padding: 20px 15px;
+            }
+            
+            .letter-header {
+                font-size: 24px;
+            }
+            
+            .letter-body {
+                font-size: 16px;
+            }
+            
+            .envelope-wrapper {
+                transform: scale(0.9);
+            }
+        }
+        
+        .instructions {
+            margin-top: 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 16px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        /* ==================== كود زرار الموسيقى ==================== */
+        .music-control-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            
+            /* إعدادات الأيقونة */
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 50%;
+
+            /* الأيقونة الافتراضية (شكل النوتة الموسيقية) */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff69b4'%3e%3cpath d='M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z'/%3e%3c/svg%3e");
+        }
+
+        .music-control-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* عند تشغيل الموسيقى، يتم تغيير الأيقونة لشكل الإيقاف */
+        .music-control-button.playing {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239370db'%3e%3cpath d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'/%3e%3c/svg%3e");
+        }
+    </style>
+</head>
+<body>
+    <audio id="myAudio" src="Apologizing.mp3" loop></audio>
+
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <div class="envelope-wrapper" id="envelope-wrapper">
+            <div class="envelope" id="envelope">
+                <div class="envelope-front">
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-seal" id="envelope-seal">❤</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="letter" id="letter">
+            <div class="close-btn" id="close-btn">×</div>
+            <div class="paper-overlay"></div>
+            <div class="paper-fibers"></div>
+            <div class="paper-folds"></div>
+            <div class="letter-content">
+                <div class="letter-header">For my dearest Mummy</div>
+                <div class="letter-body">
+                    <p>I want to sincerely apologize for not being honest with you sooner.</p>
+                    <p>I know that delaying the truth has caused you confusion and hurt, and I deeply regret not having the courage to be open from the beginning. You deserved honesty, and I failed to give you that when it mattered most.</p>
+                    <p>I am also sorry for being cruel in my words and actions. Looking back, I realize how unfair and unkind I was, and I regret causing you pain. That was never my intention, but I take full responsibility for the hurt I caused.</p>
+                    <p>Please know that I am reflecting on my mistakes and learning from them. I value your trust and respect, and I hope, in time, I can rebuild what was damaged. Even if forgiveness doesn't come right away, I want you to know how truly sorry I am.</p>
+                </div>
+                <div class="letter-signature">
+                    With love,<br>
+                    Dody
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="instructions">Click on the heart to open the envelope</div>
+    </div>
+
+    <div class="music-control-button"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const envelopeSeal = document.getElementById('envelope-seal');
+            const envelope = document.getElementById('envelope');
+            const letter = document.getElementById('letter');
+            const closeBtn = document.getElementById('close-btn');
+            const envelopeWrapper = document.getElementById('envelope-wrapper');
+            const starsContainer = document.getElementById('stars');
+            const audio = document.getElementById('myAudio');
+
+
+            // Create stars
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starsContainer.appendChild(star);
+            }
+
+            envelopeSeal.addEventListener('click', () => {
+                envelope.classList.add('open');
+                
+                setTimeout(() => {
+                    letter.classList.add('show');
+                    envelope.classList.add('fade-out');
+                }, 800);
+            });
+            
+            closeBtn.addEventListener('click', () => {
+                letter.classList.remove('show');
+                setTimeout(() => {
+                    envelope.classList.remove('open');
+                    envelope.classList.remove('fade-out');
+                }, 300);
+            });
+            
+            // Close letter when clicking outside
+            document.addEventListener('click', (e) => {
+                if (letter.classList.contains('show') && 
+                    !letter.contains(e.target) && 
+                    e.target !== envelopeSeal) {
+                    letter.classList.remove('show');
+                    setTimeout(() => {
+                        envelope.classList.remove('open');
+                        envelope.classList.remove('fade-out');
+                    }, 300);
+                }
+            });
+
+            // ==================== كود تشغيل زرار الموسيقى ====================
+            const musicButton = document.querySelector('.music-control-button');
+
+            musicButton.addEventListener('click', () => {
+                // يتأكد إذا كانت الموسيقى متوقفة أم لا
+                if (audio.paused) {
+                    audio.play();
+                    musicButton.classList.add('playing');
+                } else {
+                    audio.pause();
+                    musicButton.classList.remove('playing');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
